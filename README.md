@@ -23,3 +23,6 @@ The solution app should:
   4. Infer the zipcode + date
   5. Dispatch the form data to the Maine DoT
   6. Marvel at how much easier that was
+ 
+Thankfully, Maine DoT doesn't worry about cross-site scripting attacks, so I
+was able to hijack their form and post to it from my HTML page. 
