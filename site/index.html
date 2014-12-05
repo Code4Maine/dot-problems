@@ -144,30 +144,52 @@
 
     function success(position) {
         $.get("http://maps.googleapis.com/maps/api/geocode/json?latlng="+position.coords.latitude+","+position.coords.longitude, function( json_response ) {
-            var state_url = 'http://www.maine.gov/cgi-bin/formproc-v2/kmitchell/reportaproblemregion'
+
+            var zipcode = json_response.results[0].address_components[6].long_name;
+            $('#zipcode').val(zipcode);
+
             var town = json_response.results[0].address_components[2].long_name;
             var state = json_response.results[0].address_components[5].long_name;
-            var zipcode = json_response.results[0].address_components[6].long_name;
-            console.log(json_response.results[0]);
-            // Add some logic here to lookup the region that a town is in via some sort of data table.
-            var region = 4;
-            $('#zipcode').val(zipcode);
-            $('#issue-form').attr('action', state_url+region);
-            $( ".result" ).html( '<p>We believe you are in '+town+', '+state+'</p>');
-            $( ".region" ).html( '<p>Which is region '+region+' shown below.</p>' )
-            $( ".region-map" ).html('<p><img src="http://www.maine.gov/mdot/comments/rp/images/region'+region+'.png" /><p>')
-            $( ".region-map" ).show();
-            $( ".map" ).show();
+            $.ajax({
+                type: "GET",
+                url: "data/town-regions.csv",
+                dataType: "text",
+                success: function(data) { lookup_region(data, town, state);}
+             });
         });
     }   
     function error(position) {
         console.log("An error occurred: {0}".format(error));
     }   
 
+    function lookup_region(allText, town, state) {
+        var allTextLines = allText.split(/\r\n|\n/);
+        var headers = allTextLines[0].split(',');
+        var entries = allTextLines[0].split(',');
+        var state_url = 'http://www.maine.gov/cgi-bin/formproc-v2/kmitchell/reportaproblemregion';
+        var region = 0;
+    
+        for (var i=1; i<allTextLines.length; i++) {
+            var data = allTextLines[i].split(',');
+            if (data.length == headers.length) {
+                if (data[0] == town) {
+                    region = data[1]
+                    break;
+                };
+            }
+        }
+        $('#issue-form').attr('action', state_url+region);
+        $( ".result" ).html( '<p>We believe you are in '+town+', '+state+'</p>');
+        $( ".region" ).html( '<p>Which is region '+region+' shown below.</p>' )
+        $( ".region-map" ).html('<p><img src="http://www.maine.gov/mdot/comments/rp/images/region'+region+'.png" /><p>')
+        $( ".region-map" ).show();
+        $( ".map" ).show();
+    }
+
     if (navigator.geolocation) {
-    console.log(navigator.geolocation.getCurrentPosition(success, error));
+        console.log(navigator.geolocation.getCurrentPosition(success, error));
     } else {
-    error('not supported');
+        error('not supported');
     }
     $('input,textarea').focus(function(){
            $(this).removeAttr('placeholder');
