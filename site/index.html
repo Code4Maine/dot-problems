@@ -145,11 +145,11 @@
     function success(position) {
         $.get("http://maps.googleapis.com/maps/api/geocode/json?latlng="+position.coords.latitude+","+position.coords.longitude, function( json_response ) {
 
-            var zipcode = json_response.results[0].address_components[6].long_name;
+            var zipcode = json_response.results[0].address_components[5].long_name;
             $('#zipcode').val(zipcode);
 
-            var town = json_response.results[0].address_components[2].long_name;
-            var state = json_response.results[0].address_components[5].long_name;
+            var town = json_response.results[0].address_components[1].long_name;
+            var state = json_response.results[0].address_components[4].long_name;
             $.ajax({
                 type: "GET",
                 url: "data/town-regions.csv",
