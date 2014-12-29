@@ -17,6 +17,7 @@
 
     <!-- Custom CSS -->
     <link href="css/style.css" rel="stylesheet">
+    <link href="css/loader.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
@@ -59,9 +60,16 @@
             <h1>DoT Problems?</h1>
             <h3>Report issues and trouble you've had on Maine's roads.</h3>
             <br>
-            <p class="result">Please wait while we determine your location ... </p>
+            <div class="loader-box result">
+               <div class="lable">Loading your location ... </div><br />
+                   <div class="loader">
+                       <div class="element-animation">
+                           <img src="https://dl.dropboxusercontent.com/u/35259193/loader.png" width="1180" height="70";>
+                       </div>
+                       <div class="road"></div>
+                    </div>
+            </div>
             <p class="region" style="display:none;"></p>
-            <p class="region-map" style="display:none;"></p>
             <form id="issue-form" method=POST>
                 <p><textarea name="comment" id="comment" placeholder="Your comment ... " cols="38" rows="5"></textarea></p>
                 <p><input name="email" type="text" id="email" size="40" placeholder="Email"/></p>
@@ -179,7 +187,7 @@
             }
         }
         $('#issue-form').attr('action', state_url+region);
-        $( ".result" ).html( '<p>We believe you are in '+town+', '+state+'</p>');
+        $( ".result" ).html( '<p>We believe you are in '+town+', '+state+'</p><p class="region-map" style="display:none;"></p>');
         $( ".region" ).html( '<p>Which is region '+region+' shown below.</p>' )
         $( ".region-map" ).html('<p><img src="http://www.maine.gov/mdot/comments/rp/images/region'+region+'.png" /><p>')
         $( ".region-map" ).show();
